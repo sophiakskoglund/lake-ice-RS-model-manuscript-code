@@ -1,0 +1,57 @@
+The following geomorphological lake data are available in both .mat (MATLAB) or .csv file format.
+
+FILES
+
+distancetocoast_icein
+Description: distance from each lake used in the ice-in study to the Atlantic Ocean coast
+Rows: 1-13, lakes in numerical order by project ID (see icein_rowindex.csv in dataFiles folder for row identifiers)
+Columns: 1, distance to the Atlantic Ocean coast (kilometers)
+Data Source: Esri
+
+distancetocoast_iceout
+Description: distance from each lake used in the ice-out study to the Atlantic Ocean coast
+Rows: 1-58, lakes in numerical order by project ID (see iceout_rowindex.csv in dataFiles folder for row identifiers)
+Columns: 1, distance to the Atlantic Ocean coast (kilometers)
+Data Source: Esri
+
+elevation_icein
+Description: elevation of each lake used in the ice-in study
+Rows: 1-13, lakes in numerical order by project ID (see icein_rowindex.csv in dataFiles folder for row identifiers)
+Columns: 1, elevation (meters)
+Data Source: Vaux, P. & Entwood, J. (2014)
+
+elevation_iceout
+Description: elevation of each lake used in the ice-out study
+Rows: 1-58, lakes in numerical order by project ID (see iceout_rowindex.csv in dataFiles folder for row identifiers)
+Columns: 1, elevation (meters)
+Data Source: Vaux, P. & Entwood, J. (2014)
+
+perimeter_icein
+Description: perimeter of each lake used in the ice-in study
+Rows: 1-13, lakes in numerical order by project ID (see icein_rowindex.csv in dataFiles folder for row identifiers)
+Columns: 1, perimeter (kilometers)
+Data Source: Vaux, P. & Entwood, J. (2014)
+
+perimeter_iceout
+Description: perimeter of each lake used in the ice-out study
+Rows: 1-58, lakes in numerical order by project ID (see iceout_rowindex.csv in dataFiles folder for row identifiers)
+Columns: 1, perimeter (kilometers)
+Data Source: Vaux, P. & Entwood, J. (2014)
+
+surfacearea_icein
+Description: water surface area of each lake used in the ice-in study
+Rows: 1-13, lakes in numerical order by project ID (see icein_rowindex.csv in dataFiles folder for row identifiers)
+Columns: 1, surface area (square kilometers)
+Data Source: Vaux, P. & Entwood, J. (2014)
+
+surfacearea_iceout
+Description: water surface area of each lake used in the ice-out study
+Rows: 1-58, lakes in numerical order by project ID (see iceout_rowindex.csv in dataFiles folder for row identifiers)
+Columns: 1, surface area (square kilometers)
+Data Source: Vaux, P. & Entwood, J. (2014)
+
+REFERENCES
+
+Vaux, P. & Entwood, J. (2014). Maine Lakes: Geographic & Morphometric Information. Augusta, Maine: Maine Dept. Environmental Protection, Maine Dept. Inland Fisheries & Wildlife, Maine Office of GIS. http://www.gulfofmaine.org/kb/2.0/record.html?recordid=9680
+
+Esri, 2015 https://oceans2.arcgis.com/arcgis/rest/services/Distance_to_Coast/ImageServer
