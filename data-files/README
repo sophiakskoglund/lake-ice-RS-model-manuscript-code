@@ -1,0 +1,105 @@
+The following Cumulative Sum Method (CSM) output data are available in both .mat (MATLAB) or .csv file format.
+
+CSM_icein_DOT
+Description: dates of ice in approximated by the CSM
+Date Format: Day of Total (DOT), where 17yrs x days/yr = 6209 days total
+Rows: 1-16, winters of 2002/03–2017/18
+Columns: 1-13, lakes in numerical order by project ID (see icein_rowindex.csv in data-files folder for row identifiers)
+Output of: CSM_icein.m
+
+CSM_icein_DOY
+Description: dates of ice in approximated by the CSM
+Date Format: Day of Year (DOY), where January 1st is 1 and December 31st is 365 or 366
+Rows: 1-16, winters of 2002/03–2017/18
+Columns: 1-13, lakes in numerical order by project ID (see icein_rowindex.csv in data-files folder for row identifiers)
+Output of: CSM_icein.m
+
+CSM_icein_MAEbylake
+Description: mean average error, in days, of the CSM-approximated ice-in dates as compared to in situ data for each lake, averaged across the study period of 2002/03–2017/18
+Rows: 1-13, lakes in numerical order by project ID (see icein_rowindex.csv in data-files folder for row identifiers)
+Columns: 1, mean average error (days)
+Output of: validation_statistics.m
+
+CSM_iceout_DOT
+Description: dates of ice out approximated by the CSM
+Date Format: Day of Total (DOT), where 17yrs x days/yr = 6209 days total
+Rows: 1-16, winters of 2002/03–2017/18
+Columns: 1-58, lakes in numerical order by project ID (see iceout_rowindex.csv in data-files folder for row identifiers)
+Output of: CSM_iceout.m
+
+CSM_iceout_DOY
+Description: dates of ice out approximated by the CSM
+Date Format: Day of Year (DOY), where January 1st is 1 and December 31st is 365 or 366
+Rows: 1-16, winters of 2002/03–2017/18
+Columns: 1-58, lakes in numerical order by project ID (see iceout_rowindex.csv in data-files folder for row identifiers)
+Output of: CSM_iceout.m
+
+CSM_iceout_MAEbylake
+Description: mean average error, in days, of the CSM-approximated ice-out dates as compared to in situ data for each lake, averaged across the study period of 2002/03–2017/18
+Rows: 1-58, lakes in numerical order by project ID (see iceout_rowindex.csv in data-files folder for row identifiers)
+Columns: 1, mean average error (days)
+Output of: validation_statistics.m
+
+The following in situ data are available in both .mat (MATLAB) or .csv file format.
+
+insitu_icein_DOT
+Description: observed dates of ice in
+Date Format: Day of Total (DOT), where 17yrs x days/yr = 6209 days total
+Rows: 1-16, winters of 2002/03–2017/18
+Columns: 1-13, lakes in numerical order by project ID (see icein_rowindex.csv in data-files folder for row identifiers)
+Data Source:
+Williams, S., C. Guerette, L.C. Bacon, E. Kidd, P. Vaux, S.K. Skoglund, and A.R. Bah. 2022. Ice Phenology for 58 Lakes in Maine, USA, 2002/2003-2017/2018 ver 1. Environmental Data Initiative
+
+insitu_icein_DOY
+Description: observed dates of ice in
+Date Format: Day of Year (DOY), where January 1st is 1 and December 31st is 365 or 366
+Rows: 1-16, winters of 2002/03–2017/18
+Columns: 1-13, lakes in numerical order by project ID (see icein_rowindex.csv in data-files folder for row identifiers)
+Data Source:
+Williams, S., C. Guerette, L.C. Bacon, E. Kidd, P. Vaux, S.K. Skoglund, and A.R. Bah. 2022. Ice Phenology for 58 Lakes in Maine, USA, 2002/2003-2017/2018 ver 1. Environmental Data Initiative
+
+insitu_iceout_DOT
+Description: observed dates of ice out
+Date Format: Day of Total (DOT), where 17yrs x days/yr = 6209 days total
+Rows: 1-16, winters of 2002/03–2017/18
+Columns: 1-58, lakes in numerical order by project ID (see icein_rowindex.csv in data-files folder for row identifiers)
+Data Source:
+Williams, S., C. Guerette, L.C. Bacon, E. Kidd, P. Vaux, S.K. Skoglund, and A.R. Bah. 2022. Ice Phenology for 58 Lakes in Maine, USA, 2002/2003-2017/2018 ver 1. Environmental Data Initiative
+
+insitu_iceout_DOY
+Description: observed dates of ice out
+Date Format: Day of Year (DOY), where January 1st is 1 and December 31st is 365 or 366
+Rows: 1-16, winters of 2002/03–2017/18
+Columns: 1-58, lakes in numerical order by project ID (see icein_rowindex.csv in data-files folder for row identifiers)
+Data Source:
+Williams, S., C. Guerette, L.C. Bacon, E. Kidd, P. Vaux, S.K. Skoglund, and A.R. Bah. 2022. Ice Phenology for 58 Lakes in Maine, USA, 2002/2003-2017/2018 ver 1. Environmental Data Initiative
+
+The following model validation data are available in both .mat (MATLAB) or .csv file format.
+
+percentbyerror
+Description: The percent of model approximations within [1 to the maximum, by row] days of error.
+Rows: 1-X, days of error
+Columns: 1-4, outputs sorted by ice in/out and approximation method, as follows
+column 1 = ice in, STM
+column 2 = ice in, CSM
+column 3 = ice out, STM
+column 4 = ice out, CSM
+Output of: validation_statistics.m
+
+The following lake identification arrays are available in .csv file format.
+
+icein_rowindex.csv
+Description: file used to provide the various identification numbers of each lake included in the ice-in study
+Rows: 1-13, each lake included in the ice-in study
+Column 1 = the row each lake can be found on within array results of ice-in modeling
+Column 2 = identification number assigned to each lake in this research 
+Column 3 = MIDAS, a state identification number
+Column 4 = town in the state of Maine where a lake is located
+
+iceout_rowindex.csv
+Description: file used to provide the various identification numbers of each lake included in the ice-out study
+Rows: 1-58, each lake included in the ice-out study
+Column 1 = the row each lake can be found on within array results of ice-out modeling
+Column 2 = identification number assigned to each lake in this research 
+Column 3 = MIDAS, a state identification number
+Column 4 = town in the state of Maine where a lake is located
