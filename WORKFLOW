@@ -1,0 +1,20 @@
+Overarching Workflow 
+
+1.	Download Aqua MODIS LST (MYD11A1, Collection 6; Wan et al. 2015) files from NASA’s Earthdata Search (https://search.earthdata.nasa.gov/)
+2.	Download MODIS Land Cover (MCD12Q1, version 6, 2015, Freidl and Sulla-Manashe 2019) files from NASA’s Earthdata Search (https://search.earthdata.nasa.gov/)
+3.	Apply MODIS Land Cover Product water mask to daytime and nighttime MODIS LST and gather average temperature values per scene per lake
+4.	Load in situ lake ice phenology arrays and MODIS LST values into MATLAB, reshape and format data; Create Cumulative Sum Method (CSM) using in situ and remote sensing data
+5.	Evaluate CSM
+6.	Create figures for manuscript
+
+Script, input, output for each Workflow Step
+
+1.	This step was completed manually, gathering the tiles h12-13 v04 for the study period. These .hdf files are not included in this data package due to size, but are publically available at NASA’s Earthdata Search Engine.
+2.	Script: MELakeh1213v04_Night_vf.m; inputs: .hdf files; outputs: .mat files within the folder ‘Aqua-MODIS-night-ice-out’
+        Script: MELakeh1213v04_Day_vf.m; inputs: .hdf files; outputs: .mat files within the folder ‘Aqua-MODIS-day-ice-in’
+        See methodology aggregation description in the manuscript.
+3.	Script: CSM_iceout.m, CSM_icein.m; inputs: .mat files within the ‘Aqua-MODIS-night-ice-out’ and ‘Aqua-MODIS-day-ice-in’ folders, insitu_icein_DOT.mat, insitu_iceout_DOT.mat; outputs: CSM_icein_DOT.mat, CSM_icein_DOY.mat, CSM_iceout_DOT.mat, CSM_iceout_DOY.mat
+4.	Script: validation_statistics.m; inputs: insitu_icein_DOY.mat & CSM_icein_DOY.mat, insitu_iceout_DOY.mat & CSM_iceout_DOY.mat; outputs: CSM_icein_MAEbylake.mat, CSM_iceout_MAEbylake.mat, percentbyerror
+        Note that the same script is used for both ice in and ice out. The inputs are currently set to ice in; these can be swapped out on lines 39 and 40 for the pair of ice-out inputs.
+5.	Script: method_figures.m (creation of Figure 3); inputs: MELake75.mat, outputs: Figure 3
+6.	Script: MS_figures.Rmd (creation for Figure 4-7); inputs: CSM_icein_DOY.mat, insitu_icein_DOY.mat, CSM_iceout_DOY.mat, insitu_iceout_DOY.mat, CSM_icein_MAEbylake.mat, CSM_iceout_MAEbylake.mat, .mat files in the ‘geomorphology’ folder; outputs: Figures 4-7
