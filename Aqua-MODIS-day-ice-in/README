@@ -1,0 +1,25 @@
+The following Aqua MODIS land surface temperature data are available in both .mat (MATLAB) and .csv file formats.
+
+File name format: MELake + Project ID #
+see icein_rowindex.csv in the data-files folder for the list of lakes assigned to each project identification number
+
+MELake02 
+MELake46 
+MELake51 
+MELake58 
+MELake75 
+MELake88
+MELake119 
+MELake124 
+MELake127 
+MELake132  
+MELake141 
+MELake155 
+MELake211
+
+Description: Daytime Aqua MODIS land surface temperature 
+Rows: 17, number of years 
+Columns: 366, number of days per year. 
+Value: Numeric
+Unit: Kelvin
+Missing value: NaN
