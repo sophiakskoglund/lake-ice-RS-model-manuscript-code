@@ -4,49 +4,49 @@ FILES
 
 distancetocoast_icein
 Description: distance from each lake used in the ice-in study to the Atlantic Ocean coast
-Rows: 1-13, lakes in numerical order by project ID (see icein_rowindex.csv in dataFiles folder for row identifiers)
+Rows: 1-13, lakes in numerical order by project ID (see icein_rowindex.csv in data-files folder for row identifiers)
 Columns: 1, distance to the Atlantic Ocean coast (kilometers)
 Data Source: Esri
 
 distancetocoast_iceout
 Description: distance from each lake used in the ice-out study to the Atlantic Ocean coast
-Rows: 1-58, lakes in numerical order by project ID (see iceout_rowindex.csv in dataFiles folder for row identifiers)
+Rows: 1-58, lakes in numerical order by project ID (see iceout_rowindex.csv in data-files folder for row identifiers)
 Columns: 1, distance to the Atlantic Ocean coast (kilometers)
 Data Source: Esri
 
 elevation_icein
 Description: elevation of each lake used in the ice-in study
-Rows: 1-13, lakes in numerical order by project ID (see icein_rowindex.csv in dataFiles folder for row identifiers)
+Rows: 1-13, lakes in numerical order by project ID (see icein_rowindex.csv in data-files folder for row identifiers)
 Columns: 1, elevation (meters)
 Data Source: Vaux, P. & Entwood, J. (2014)
 
 elevation_iceout
 Description: elevation of each lake used in the ice-out study
-Rows: 1-58, lakes in numerical order by project ID (see iceout_rowindex.csv in dataFiles folder for row identifiers)
+Rows: 1-58, lakes in numerical order by project ID (see iceout_rowindex.csv in data-files folder for row identifiers)
 Columns: 1, elevation (meters)
 Data Source: Vaux, P. & Entwood, J. (2014)
 
 perimeter_icein
 Description: perimeter of each lake used in the ice-in study
-Rows: 1-13, lakes in numerical order by project ID (see icein_rowindex.csv in dataFiles folder for row identifiers)
+Rows: 1-13, lakes in numerical order by project ID (see icein_rowindex.csv in data-files folder for row identifiers)
 Columns: 1, perimeter (kilometers)
 Data Source: Vaux, P. & Entwood, J. (2014)
 
 perimeter_iceout
 Description: perimeter of each lake used in the ice-out study
-Rows: 1-58, lakes in numerical order by project ID (see iceout_rowindex.csv in dataFiles folder for row identifiers)
+Rows: 1-58, lakes in numerical order by project ID (see iceout_rowindex.csv in data-files folder for row identifiers)
 Columns: 1, perimeter (kilometers)
 Data Source: Vaux, P. & Entwood, J. (2014)
 
 surfacearea_icein
 Description: water surface area of each lake used in the ice-in study
-Rows: 1-13, lakes in numerical order by project ID (see icein_rowindex.csv in dataFiles folder for row identifiers)
+Rows: 1-13, lakes in numerical order by project ID (see icein_rowindex.csv in data-files folder for row identifiers)
 Columns: 1, surface area (square kilometers)
 Data Source: Vaux, P. & Entwood, J. (2014)
 
 surfacearea_iceout
 Description: water surface area of each lake used in the ice-out study
-Rows: 1-58, lakes in numerical order by project ID (see iceout_rowindex.csv in dataFiles folder for row identifiers)
+Rows: 1-58, lakes in numerical order by project ID (see iceout_rowindex.csv in data-files folder for row identifiers)
 Columns: 1, surface area (square kilometers)
 Data Source: Vaux, P. & Entwood, J. (2014)
 
