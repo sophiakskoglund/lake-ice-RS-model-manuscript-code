@@ -94,7 +94,7 @@ Rows: 1-13, each lake included in the ice-in study
 Column 1 = the row each lake can be found on within array results of ice-in modeling
 Column 2 = identification number assigned to each lake in this research 
 Column 3 = MIDAS, a state identification number
-Column 4 = town in the state of Maine where a lake is located
+Column 4 = lake name and the town in the state of Maine where it is located
 
 iceout_rowindex.csv
 Description: file used to provide the various identification numbers of each lake included in the ice-out study
@@ -102,4 +102,4 @@ Rows: 1-58, each lake included in the ice-out study
 Column 1 = the row each lake can be found on within array results of ice-out modeling
 Column 2 = identification number assigned to each lake in this research 
 Column 3 = MIDAS, a state identification number
-Column 4 = town in the state of Maine where a lake is located
+Column 4 = lake name and the town in the state of Maine where it is located
