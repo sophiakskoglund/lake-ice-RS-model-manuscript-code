@@ -1,0 +1,2 @@
+This folder contains code for MODIS data formatting, the Cumulative Sum Method (CSM), validation and evaluation, and figure creation.
+More details can be found in the comments of each script.
