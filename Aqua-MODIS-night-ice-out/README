@@ -1,7 +1,14 @@
-The following Aqua MODIS land surface temperature data are available in both .mat (MATLAB) and .csv file formats.
+The following 2002–2018 Aqua MODIS land surface temperature data are available in both .mat (MATLAB) and .csv file formats.
 
 File name format: MELake + Project ID #
 see iceout_rowindex.csv in the data-files folder for the list of lakes assigned to each project identification number
+
+Description: Nighttime Aqua MODIS Land surface temperature
+Rows: 17, number of years
+Columns: 366, number of days per year
+Value: Numeric
+Unit: Kelvin
+Missing value: NaN
 
 MELake1                       
 MELake2
@@ -62,9 +69,93 @@ MELake211
 MELake214
 MELake216
 
-Description: Nighttime Aqua MODIS land surface temperature
-Rows: 17, number of years
-Columns: 366, number of days per year.
+The following 2002–2023 Aqua MODIS land surface temperature data, used for validation of the Cumulative Sum Method (CSM), are available in both .mat (MATLAB) and .csv file formats.
+
+File name format: MELake + Project ID # [+ _validation_58 for original 58 lakes]
+see iceout_rowindex.csv in the data-files folder for the list of lakes assigned to each project identification number
+
+Description: Nighttime Aqua MODIS Land surface temperature
+Rows: 22, number of years
+Columns: 366, number of days per year
 Value: Numeric
 Unit: Kelvin
 Missing value: NaN
+
+MELake1                       
+MELake2
+MELake4
+MELake7
+MELake9
+MELake10
+MELake11
+MELake14
+MELake15
+MELake19
+MELake20
+MELake21
+MELake23
+MELake25
+MELake26
+MELake27
+MELake29
+MELake35
+MELake36
+MELake37
+MELake39
+MELake40
+MELake42
+MELake43
+MELake44
+MELake45
+MELake46
+MELake47
+MELake51
+MELake53
+MELake55
+MELake58
+MELake65
+MELake70
+MELake71
+MELake75
+MELake77
+MELake81
+MELake82
+MELake84
+MELake85
+MELake88
+MELake91
+MELake97
+MELake98
+MELake99
+MELake100
+MELake108
+MELake115
+MELake116
+MELake119
+MELake123
+MELake124
+MELake125
+MELake127
+MELake129
+MELake130
+MELake132
+MELake134
+MELake141
+MELake142
+MELake144
+MELake146
+MELake150
+MELake155
+MELake156
+MELake159
+MELake161
+MELake179
+MELake188
+MELake194
+MELake198
+MELake203
+MELake208
+MELake209
+MELake211
+MELake214
+MELake216
