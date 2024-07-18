@@ -1,6 +1,6 @@
 ---
 title: "MODIS Lake Ice Approximation MS Figs"
-author: "B. Steele"
+author: "B. Steele and S. Skoglund"
 date: \today
 output: html_document
 ---
@@ -13,6 +13,8 @@ Set up r, load packages, point to directories.
 knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
 library(ggthemes)
+library(ggtext)
+library(ggpubr)
 library(R.matlab)
 library(cowplot)
 library(grid)
@@ -20,9 +22,9 @@ library(gridExtra)
 library(readxl)
 
 #point to directory locations
-datadir = 'C:/Users/steeleb/Dropbox/Lake Ice/Data & Code Publishing/dataFiles/'
-geodata = 'C:/Users/steeleb/Dropbox/Lake Ice/Data & Code Publishing/geomorphology/'
-dumpdir = 'C:/Users/steeleb/Dropbox/Lake Ice/MS figures/'
+datadir = '/Users/skskoglund/Dropbox/Lake Ice/Data & Code Publishing V2/data-files/'
+geodata = '/Users/skskoglund/Dropbox/Lake Ice/Data & Code Publishing V2/geomorphology/'
+dumpdir = '/Users/skskoglund/Dropbox/Lake Ice/Data & Code Publishing V2/figures/'
 
 #create df of year indications for .mat files
 year.df = as.data.frame(c('2002-2003',
@@ -57,7 +59,7 @@ lakeout.df = rowid_to_column(lakeout.df, 'rowid')
 #create final theme for figures
 final_theme=theme_bw() +
   theme(axis.text=element_text(size=10, face = 'bold'),
-        axis.title=element_text(size=12,face="bold"),
+        axis.title=element_text(size=11,face="bold"), #was 12
         legend.text = element_text(size = 9),
         strip.text.x = element_text(size = 9, face = 'bold'),
         legend.key.size = unit(0.15, 'in')) #save as a grom
@@ -170,49 +172,155 @@ range(icein_summary$daydiff)
 # Make figures for manuscript
 
 ### Figure 4: Ice in and Ice out predicted-observed
+### Figure 7: Ice out validation (+20 lakes, +5 years) predicted-observed
 
-```{r fig3 ice in and ice out pred-obs CSM}
-icein_iceout_CSM <- full_join(icein, iceout) %>% 
-  filter(model == 'CSM')
+```{r fig4 ice in and ice out pred-obs CSM + fig7 ice out validation pred-obs CSM}
 
-#set fake limits for square fig
-fake_limits_in = c(min(min(icein_iceout_CSM[icein_iceout_CSM$ice == 'ice in',]$pred_day), min(icein_iceout_CSM[icein_iceout_CSM$ice == 'ice in',]$obs_day)),
-                   max(max(icein_iceout_CSM[icein_iceout_CSM$ice == 'ice in',]$pred_day), max(icein_iceout_CSM[icein_iceout_CSM$ice == 'ice in',]$obs_day)))
-ice = c('ice in', 'ice in')
-fake_limits_in <- rbind(fake_limits_in, ice) %>% 
-  t() %>% 
-  data.frame() %>% 
-  rename(obs_day = fake_limits_in) %>% 
-  mutate(pred_day = as.numeric(obs_day),
-         obs_day = as.numeric(obs_day),
-         year = '2006-2007')
+# Function to read data from CSV files and create scatterplot
+create_scatterplot <- function(file1, file2, subplot, legendpos, totalyears, yrbefore, yrstart) {
+  # Read data from CSV files
+  data1 <- read.csv(file1, header = FALSE, na.strings = "nan")
+  data2 <- read.csv(file2, header = FALSE, na.strings = "nan")
+  
+  # Create a data frame to store combined data
+  combined_data <- data.frame(x = numeric(0), y = numeric(0), series = character(0))
+  
+  # Define color values for each series (colorblind-friendly colors)
+  series_colors <- c("#000000", "#E69F00", "#56B4E9", "#009E73",
+                     "#F0E442", "#0072B2", "#D55E00", "#CC79A7",
+                     "#000000", "#E69F00", "#56B4E9", "#009E73",
+                     "#F0E442", "#0072B2", "#D55E00", "#CC79A7")
+  series_shapes <- c(17,17,17,17,17,17,17,17,16,16,16,16,16,16,16,16)
+  
+  
+  #create final theme for figures
+  final_theme_scatterplot=theme_bw() +
+    theme(axis.text=element_text(size=10, face='bold'),
+          axis.title=element_text(size=12, face='bold'),
+          axis.title.y = ggtext::element_markdown(),
+          plot.title=element_text(face='bold'),
+          legend.text = element_text(size = 12),
+          strip.text.x = element_text(size = 12, face = 'bold'),
+          legend.key.size = unit(0.15, 'in'),
+          legend.position = legendpos,
+          aspect.ratio=1) #save as a grom
+  
+  # Loop through each series
+  for (i in 1:totalyears) {
+    # Extract data for each series
+    series_data1 <- data1[i, ]
+    series_data2 <- data2[i, ]
+    
+    # Combine data, excluding datapoints with NA values
+    combined_series_data <- data.frame(x = as.numeric(series_data1), y = as.numeric(series_data2))
+    combined_series_data <- combined_series_data[complete.cases(combined_series_data), ]
+    
+    # Add series names
+    combined_series_data$series <- paste0(yrbefore + i, "-", yrstart + i)
+    
+    # Append to the overall combined data frame
+    combined_data <- rbind(combined_data, combined_series_data)
+  }
+  
+  # Create a scatterplot with manual color specification
+  ggplot(combined_data, aes(x = x, y = y, color = series, shape = series)) +
+    geom_abline(slope = 1, intercept = 0, size = 1, color = 'grey') +
+    geom_point(size = 2) +
+    scale_color_manual(values = series_colors) +  # Specify colors manually
+    scale_shape_manual(values = series_shapes) +
+    labs(title = subplot,
+         x = "CSM approximation (ordinal day)",
+         y = "*in situ* (ordinal day)",
+         color = NULL,
+         shape = NULL) +
+    final_theme_scatterplot
+}
 
-fake_limits_out = c(min(min(icein_iceout_CSM[icein_iceout_CSM$ice == 'ice out',]$pred_day), min(icein_iceout_CSM[icein_iceout_CSM$ice == 'ice out',]$obs_day)),
-                   max(max(icein_iceout_CSM[icein_iceout_CSM$ice == 'ice out',]$pred_day), max(icein_iceout_CSM[icein_iceout_CSM$ice == 'ice out',]$obs_day)))
-ice = c('ice out', 'ice out')
-fake_limits_out <- rbind(fake_limits_out, ice) %>% 
-  t() %>% 
-  data.frame() %>% 
-  rename(obs_day = fake_limits_out) %>% 
-  mutate(pred_day = as.numeric(obs_day),
-         obs_day = as.numeric(obs_day),year = '2006-2007')
+# Call the function with your file names
+setwd(datadir)
+plot4a <- create_scatterplot("CSM_icein_DOY.csv", "insitu_icein_DOY.csv", "a", "none", 16, 2001, 2002)
+plot4b <- create_scatterplot("CSM_iceout_DOY.csv", "insitu_iceout_DOY.csv", "b", "none", 16, 2001, 2002)
+plot7a <- create_scatterplot("CSM_iceout_DOY_validation_20.csv", "insitu_iceout_DOY_validation_20.csv", "a", "none", 16, 2001, 2002)
+plot7b <- create_scatterplot("CSM_iceout_DOY_validation_58.csv", "insitu_iceout_DOY_validation_58.csv", "b", "none", 5, 2017, 2018)
 
-fake_limits = full_join(fake_limits_in, fake_limits_out)
+# Legends separated from plots
+setwd(datadir)
+plot4a4b7alegend <- create_scatterplot("CSM_iceout_DOY.csv", "insitu_iceout_DOY.csv", "b", "bottom", 16, 2001, 2002)
+plot7blegend <- create_scatterplot("CSM_iceout_DOY_validation_58.csv", "insitu_iceout_DOY_validation_58.csv", "b", "right", 5, 2017, 2018)
+# for figures 4a, 4b, and 7a
+legend_plot4a4b7a <- get_legend(plot4a4b7alegend)
+# for figure 7b
+legend_plot7b <- get_legend(plot7blegend)
 
+# density plots -----------------------------------------------------------
 
-CSM_fig4 <- ggplot(icein_iceout_CSM, aes(x = pred_day, y = obs_day, color = year, shape = year)) +
-  geom_abline(slope = 1, intercept = 0, size = 1, color = 'grey') +
-  geom_point(size = 2) +
-  labs(x = 'MODIS-derived CSM approximation of ice phenology (day of year)',
-       y ='observed day of ice phenology (day of year)')+
-  geom_blank(data = fake_limits) +
-  facet_wrap(ice ~ ., scales = 'free') +
-  scale_color_manual(values=c("#000000", "#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7", "#000000", "#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7")) +  # 2x the colorblind palette
-  scale_shape_manual(values = c(17,17,17,17,17,17,17,17,16,16,16,16,16,16,16,16)) +
-  final_theme 
-print(CSM_fig4)
+#ice in training
+trainin <- read.csv("CSM_icein_DOY.csv", header = FALSE, na.strings = "nan") - read.csv("insitu_icein_DOY.csv", header = FALSE, na.strings = "nan")
+trainin <- data.frame(residuals=unlist(trainin))
+#ice out training
+trainout <- read.csv("CSM_iceout_DOY.csv", header = FALSE, na.strings = "nan") - read.csv("insitu_iceout_DOY.csv", header = FALSE, na.strings = "nan")
+trainout <- data.frame(residuals=unlist(trainout))
+#ice out additional lakes
+newLakes <- read.csv("CSM_iceout_DOY_validation_20.csv", header = FALSE, na.strings = "nan") - read.csv("insitu_iceout_DOY_validation_20.csv", header = FALSE, na.strings = "nan")
+newLakes <- data.frame(residuals=unlist(newLakes))
+#ice out 2018-2023
+newTime <- read.csv("CSM_iceout_DOY_validation_58.csv", header = FALSE, na.strings = "nan") - read.csv("insitu_iceout_DOY_validation_58.csv", header = FALSE, na.strings = "nan")
+newTime <- data.frame(residuals=unlist(newTime))
+
+#create final theme for figures
+final_theme_density=theme_bw() +
+  theme(axis.text=element_text(size=10, face = 'bold'),
+        axis.title=element_text(size=12,face="bold"),
+        legend.text = element_text(size = 12),
+        strip.text.x = element_text(size = 12, face = 'bold'),
+        legend.key.size = unit(0.15, 'in'),
+        plot.title=element_text(face='bold'),
+        aspect.ratio=1) #save as a grom
+
+#density plots
+plot4c <- ggplot(data = trainin, aes(x=residuals)) + 
+  geom_density() +
+  geom_vline(xintercept = 0, size = 0.5, color = 'grey') +
+  labs(title = "c",
+       x = "residuals (days)",
+       y = "density") +
+  final_theme_density
+plot4d <- ggplot(data = trainout, aes(x=residuals)) + 
+  geom_density() +
+  geom_vline(xintercept = 0, size = 0.5, color = 'grey') +
+  labs(title = "d",
+       x = "residuals (days)",
+       y = "density") +
+  final_theme_density
+plot7c <- ggplot(data = newLakes, aes(x=residuals)) + 
+  geom_density() +
+  geom_vline(xintercept = 0, size = 0.5, color = 'grey') +
+  labs(title = "c",
+       x = "residuals (days)",
+       y = "density") +
+  final_theme_density
+plot7d <- ggplot(data = newTime, aes(x=residuals)) + 
+  geom_density() +
+  geom_vline(xintercept = 0, size = 0.5, color = 'grey') +
+  labs(title = "d",
+       x = "residuals (days)",
+       y = "density") +
+  final_theme_density
+
+# combine plots and save -----------------------------------------------------------
+
+CSM_fig4 <- grid.arrange(plot4a, plot4b, plot4c, plot4d, nrow = 2, ncol = 2)
+CSM_fig7 <- grid.arrange(plot7a, plot7b, plot7c, plot7d, nrow = 2, ncol = 2)
+
 ggsave(file.path(dumpdir, 'fig4_CSM_o-p.jpg'), 
-       CSM_fig3, height = 3, width = 6, dpi = 300, units = 'in')
+       CSM_fig4, height = 6, width = 6, dpi = 300, units = 'in')
+ggsave(file.path(dumpdir, 'fig7_CSM_o-p_validation.jpg'), 
+       CSM_fig7, height = 6, width = 6, dpi = 300, units = 'in')
+ggsave(file.path(dumpdir, 'fig4a4b7a_legend.jpg'), 
+       legend_plot4a4b7a, height = 3, width = 6, dpi = 300, units = 'in')
+ggsave(file.path(dumpdir, 'fig7b_legend.jpg'), 
+       legend_plot7b, height = 3, width = 6, dpi = 300, units = 'in')
+
 ```
 
 
@@ -297,6 +405,36 @@ elev_out <- as.data.frame(elev_out$elevation) %>%
   mutate(in_out = 'out') %>% 
   select(-rowid)
 
+depth_in <- readMat(file.path(geodata, 'meandepth_icein.mat'))
+depth_out <- readMat(file.path(geodata, 'meandepth_iceout.mat'))
+depth_in <- as.data.frame(depth_in$meandepth) %>%
+  rowid_to_column()  %>%
+  full_join(lakein.df) %>%
+  rename(MeanDepth = V1)%>%
+  mutate(in_out = 'in') %>% 
+  select(-rowid)
+depth_out <- as.data.frame(depth_out$meandepth) %>%
+  rowid_to_column()  %>%
+  full_join(lakeout.df) %>%
+  rename(MeanDepth = V1)%>%
+  mutate(in_out = 'out') %>% 
+  select(-rowid)
+
+vol_in <- readMat(file.path(geodata, 'volume_icein.mat'))
+vol_out <- readMat(file.path(geodata, 'volume_iceout.mat'))
+vol_in <- as.data.frame(vol_in$volume) %>%
+  rowid_to_column()  %>%
+  full_join(lakein.df) %>%
+  rename(Volume = V1)%>%
+  mutate(in_out = 'in') %>% 
+  select(-rowid)
+vol_out <- as.data.frame(vol_out$volume) %>%
+  rowid_to_column()  %>%
+  full_join(lakeout.df) %>%
+  rename(Volume = V1)%>%
+  mutate(in_out = 'out') %>% 
+  select(-rowid)
+
 perim_in <- readMat(file.path(geodata, 'perimeter_icein.mat'))
 perim_out <- readMat(file.path(geodata, 'perimeter_iceout.mat'))
 perim_in <- as.data.frame(perim_in$perimeter) %>%
@@ -328,11 +466,15 @@ sa_out <- as.data.frame(sa_out$surfacearea) %>%
   select(-rowid)
 
 mae_geomorph_in <- full_join(coast_in, elev_in) %>% 
+  full_join(., depth_in) %>% 
+  full_join(., vol_in) %>%
   full_join(., perim_in) %>% 
   full_join(., sa_in) %>% 
   full_join(., mae_in)
 
 mae_geomorph_out <- full_join(coast_out, elev_out) %>% 
+  full_join(., depth_out) %>% 
+  full_join(., vol_out) %>%
   full_join(., perim_out) %>% 
   full_join(., sa_out) %>% 
   full_join(., mae_out)
@@ -371,10 +513,40 @@ fig6_a <- ggplot(mae_geomorph_in, aes(x = (Area), y = mae))+
 
 ```
 
-#### Figure 6 c-d: error vs. elevation & distance to coast
+#### Figure 6 c-d: error vs. volume and depth
 
-```{r fig 4 c-d mae vs elev dist to coast}
-fig6_d <- ggplot(mae_geomorph_out, aes(x = Elevation, y = mae))+
+```{r fig6 c-d mae vs volume depth}
+fig6_d <- ggplot(mae_geomorph_out, aes(x = (Volume), y = mae))+
+  geom_point(size = 2, shape = 1) +
+  labs(x = bquote(bold('volume'~(km^3))),
+       y = 'mean absolute error (days)')+
+  geom_point(aes(x = (MeanDepth)/6, y = mae), color = '#0072B2', shape = 3, fill = '#0072B2', size = 2) +
+  scale_x_continuous(sec.axis = sec_axis(~ . *6, name = "mean depth (m)")) +
+  final_theme +
+  theme(panel.grid =  element_blank(),
+        axis.title.x.top = element_text(color = '#0072B2'),
+        axis.text.x.top = element_text(color = '#0072B2'),
+        axis.ticks.x.top = element_line(color = '#0072B2'))
+
+fig6_c <- ggplot(mae_geomorph_in, aes(x = (Volume), y = mae))+
+  geom_point(size = 2, shape = 1) +
+  labs(x = bquote(bold('volume'~(km^3))),
+       y = 'mean absolute error (days)')+
+  geom_point(aes(x = (MeanDepth)/6, y = mae), color = '#0072B2', shape = 3, fill = '#0072B2', size = 2) +
+  scale_x_continuous(sec.axis = sec_axis(~ . *6, name = "mean depth (m)")) +
+  # coord_cartesian(xlim = c(0,150)) +
+  final_theme +
+  theme(panel.grid =  element_blank(),
+        axis.title.x.top = element_text(color = '#0072B2'),
+        axis.text.x.top = element_text(color = '#0072B2'),
+        axis.ticks.x.top = element_line(color = '#0072B2'))
+
+```
+
+#### Figure 6 e-f: error vs. elevation & distance to coast
+
+```{r fig 6 e-f mae vs elev dist to coast}
+fig6_f <- ggplot(mae_geomorph_out, aes(x = Elevation, y = mae))+
   geom_point(size = 2, shape   = 22) +
   labs(x = 'elevation (m)',
        y = 'mean absolute error (days)')+
@@ -388,7 +560,7 @@ fig6_d <- ggplot(mae_geomorph_out, aes(x = Elevation, y = mae))+
         axis.text.x.top = element_text(color = '#009E73'),
         axis.ticks.x.top = element_line(color = '#009E73'))
 
-fig6_c <- ggplot(mae_geomorph_in, aes(x = Elevation, y = mae))+
+fig6_e <- ggplot(mae_geomorph_in, aes(x = Elevation, y = mae))+
   geom_point(size = 2, shape = 22) +
   labs(x = 'elevation (m)',
        y = 'mean absolute error (days)') +
@@ -405,7 +577,7 @@ fig6_c <- ggplot(mae_geomorph_in, aes(x = Elevation, y = mae))+
 
 ```
 
-#### Make a legend for Figure 5 a-b and c-d
+#### Make a legend for Figure 6 a-b, c-d, and e-f
 
 Since these figures don't share axes and are not faceted, we need to grab a legend from a faceted figure with the same data.
 
@@ -431,8 +603,31 @@ legendab <- get_legend(
 fig6_ab <- plot_grid(fig6_a, fig6_b, labels = c('a', 'b'))
 fig6_ab <- plot_grid(fig6_ab, legendab, rel_widths = c(5, 1.25), nrow =1)
 
-# make a legend for fig8cd
+# make a legend for fig6cd
+
 legendcd <- get_legend(
+  mae_geomorph_in %>% 
+    select(lakeID, mae, Volume, MeanDepth) %>% 
+    pivot_longer(cols = c(MeanDepth, Volume), names_to = 'geo_feat', values_to = 'value') %>% 
+    mutate(geo_feat = case_when(grepl('Volume', geo_feat) ~ 'volume',
+                                                 TRUE ~ 'mean depth       ')) %>% 
+    ggplot(aes(x = value, y = mae)) +
+    geom_point(aes(color = geo_feat, shape = geo_feat), size = 2) + 
+    scale_shape_manual(values = c(3, 1)) +
+    scale_linewidth_manual(values = c(2,1)) +
+    scale_color_manual(values = c('#0072B2', '#000000')) +
+    final_theme +
+    theme(legend.box.margin = margin(0, 0, 0, 5),
+          legend.title = element_blank(),
+          legend.text = element_text(size = 10)) # create some space to the left of the legend
+)
+
+# add the legend to the row we made earlier. 
+fig6_cd <- plot_grid(fig6_c, fig6_d, labels = c('c', 'd'))
+fig6_cd <- plot_grid(fig6_cd, legendcd, rel_widths = c(5, 1.25), nrow =1)
+
+# make a legend for fig6ef
+legendef <- get_legend(
   mae_geomorph_in %>% 
     select(lakeID, mae, Elevation, Distance_to_Coast) %>% 
     pivot_longer(cols = c(Elevation, Distance_to_Coast), names_to = 'geo_feat', values_to = 'value') %>% 
@@ -451,26 +646,33 @@ legendcd <- get_legend(
 
 # add the legend to the row we made earlier. Give it one-third of 
 # the width of one plot (via rel_widths).
-fig6_cd <- plot_grid(fig6_c, fig6_d,
-                     labels = c('c', 'd'))
-fig6_cd <- plot_grid(fig6_cd, legendcd, rel_widths = c(5, 1.25), nrow =1)
+fig6_ef <- plot_grid(fig6_e, fig6_f,
+                     labels = c('e', 'f'))
+fig6_ef <- plot_grid(fig6_ef, legendef, rel_widths = c(5, 1.25), nrow =1)
 
-fig6 <- plot_grid(fig6_ab, fig6_cd,
-                  nrow = 2)
+# combine
+
+fig6 <- plot_grid(fig6_ab, fig6_cd, fig6_ef,
+                  nrow = 3)
 
 fig6
 
-save_plot(file.path(dumpdir, 'fig6_geomorph_mae.png'),
+save_plot(file.path(dumpdir, 'fig6_geomorph_mae.jpg'),
           plot = fig6,
-          base_height = 6,
-          base_asp = 1.2)
+          base_height = 10, #6
+          base_asp = 1, #6
+          dpi = 600)
 
 ```
 
 
-### Figure 7: year x prediction range
+### Figure 8: year x prediction range
 
 ```{r}
+
+icein_iceout_CSM <- full_join(icein, iceout) %>% 
+  filter(model == 'CSM')
+
 iceinout_pivot_CSM <- icein_iceout_CSM %>% 
   pivot_longer(values_to = 'values',
                names_to = 'pre_obs',
@@ -482,7 +684,7 @@ iceinout_summary <- iceinout_pivot_CSM %>%
   summarise(n = n())
 #all ice in should be dots; ice out can be boxplot n>8
 
-fig7a <- iceinout_pivot_CSM %>% 
+fig8a <- iceinout_pivot_CSM %>% 
   filter(ice == 'ice in') %>% 
   ggplot(., aes(x = year, y = values, color = pre_obs)) +
   geom_point(position = position_dodge(width=0.75)) +
@@ -492,12 +694,12 @@ fig7a <- iceinout_pivot_CSM %>%
   scale_color_colorblind(name = NULL) +
   theme(axis.text.x = element_blank(),
         legend.position = 'none')
-fig7a
-fig7a <- plot_grid(NULL, fig7a,
+fig8a
+fig8a <- plot_grid(NULL, fig8a,
                    nrow = 1,
                    rel_widths = c(0.002, 1))
 
-fig7b <- iceinout_pivot_CSM %>% 
+fig8b <- iceinout_pivot_CSM %>% 
   filter(ice == 'ice out') %>% 
   ggplot(., aes(x = year, y = values, color = pre_obs)) +
   geom_boxplot() +
@@ -507,25 +709,23 @@ fig7b <- iceinout_pivot_CSM %>%
   scale_color_colorblind(name = NULL) +
   theme(axis.text.x = element_text(angle = 30, vjust = 1, hjust=1),
         legend.position = 'bottom')
-fig7b
+fig8b
 
-fig7_plot <- plot_grid(fig7a, fig7b,
+fig8_plot <- plot_grid(fig8a, fig8b,
                           ncol = 1,
                           rel_heights = c(0.6, 1))
-fig7_plot
+fig8_plot
 
-y.grob <- textGrob('     day of year', 
+y.grob <- textGrob('                       day of year', 
                    gp=gpar(fontface="bold", fontsize=12), 
                    rot=90)
-plot_grid(y.grob, fig7_plot,
-          rel_widths = c(0.03, 1))
+plot_grid(y.grob, fig8_plot,
+          rel_widths = c(0.04, 1))
 
-ggsave(file.path(dumpdir, 'fig7_inout_boxandwhisker.png'),
+ggsave(file.path(dumpdir, 'fig8_inout_boxandwhisker.jpg'),
        height = 4,
        width = 6,
        dpi = 300)
-
-
 
 ```
 
